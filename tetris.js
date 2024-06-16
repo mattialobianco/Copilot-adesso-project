@@ -208,5 +208,31 @@ function drawBoard(board, canvas, context, currentPiece, currentPosition) {
     drawBoard(board2, canvas2, context2, currentPiece2, currentPosition2);
   });
 
+   // Function to display the timer
+ function displayTimer() {
+  const timerElement = document.getElementById('timer');
+  let seconds = 0;
+  let minutes = 0;
+  let hours = 0;
+
+  setInterval(() => {
+    seconds++;
+    if (seconds === 60) {
+      seconds = 0;
+      minutes++;
+    }
+    if (minutes === 60) {
+      minutes = 0;
+      hours++;
+    }
+
+    const formattedTime = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    timerElement.textContent = formattedTime;
+  }, 1000);
+}
+
+// Call the function to display the timer
+displayTimer();
+
 // Start the game loop
 var updateInterval = setInterval(update, 1000);
