@@ -209,6 +209,15 @@ function drawBoard(board, canvas, context, currentPiece, currentPosition) {
       }
     }
   }
+
+  // Draw vertical lines
+  context.beginPath();
+  for (let x = 0; x <= canvas.width; x += 30) {
+    context.moveTo(x, 0);
+    context.lineTo(x, canvas.height);
+  }
+  context.strokeStyle = 'gray'; // Set the color of the lines
+  context.stroke();
 }
 
 // Existing code...
