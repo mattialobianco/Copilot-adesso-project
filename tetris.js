@@ -105,8 +105,8 @@ function update() {
     currentPiece2 = null;
   }
 
-  deleteCompletedLines(board1);
-  deleteCompletedLines(board2);
+  deleteCompletedLines(board1, board2);
+  deleteCompletedLines(board2, board1);
 
   // Draw the boards
   drawBoard(board1, canvas1, context1, currentPiece1, currentPosition1);
@@ -153,14 +153,22 @@ function rotatePiece(direction, currentPiece) {
   return newPiece;
 }
 
+function addLineAtBottom(board) { 
+  board.shift(); // Remove the first row
+  let newRow = Array(10).fill(1);
+  newRow[Math.floor(Math.random() * newRow.length)] = 0;
+  board.push(newRow); // Add the new row at the bottom
+}
+
 // Function to check and delete completed lines
-function deleteCompletedLines(board) {
+function deleteCompletedLines(board, enemyBoard) {
   // Iterate through each line from bottom to top
   for (let y = board.length - 1; y >= 0; y--) {
     // Check if the line is filled
     if (board[y].every(cell => cell !== 0)) {
       // Delete the line
       board.splice(y, 1);
+      addLineAtBottom(enemyBoard)
       // Add an empty line at the top
       board.unshift(Array(10).fill(0));
       // Since we modified the board, check the same line again
