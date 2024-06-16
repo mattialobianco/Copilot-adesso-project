@@ -174,6 +174,8 @@ function deleteCompletedLines(board, enemyBoard) {
       // Since we modified the board, check the same line again
       // as it now contains the line above it
       y++;
+      currentPiece1 = null;
+      currentPiece2 = null;
     }
   }
 }
