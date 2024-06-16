@@ -58,6 +58,11 @@ function update() {
     currentPosition = {x: 5, y: 0};
   }
 
+  if (collision()) {
+  alert("Game Over")
+  clearInterval(updateInterval)
+  }
+
   // Move the current piece down
   currentPosition.y++;
 
@@ -152,4 +157,4 @@ function deleteCompletedLines() {
   });
 
 // Start the game loop
-setInterval(update, 1000);
+var updateInterval = setInterval(update, 1000);
