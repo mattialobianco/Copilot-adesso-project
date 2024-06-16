@@ -66,6 +66,7 @@ function update() {
     currentPosition.y--;
     fixPiece();
   }
+  deleteCompletedLines();
 
   // Draw the board
   drawBoard();
@@ -102,6 +103,24 @@ function rotatePiece(direction) {
     else newPiece.reverse(); // Reverse the matrix for a counterclockwise rotation
     currentPiece = newPiece;
   }
+
+  // Function to check and delete completed lines
+function deleteCompletedLines() {
+  // Iterate through each line from bottom to top
+  for (let y = board.length - 1; y >= 0; y--) {
+    // Check if the line is filled
+    if (board[y].every(cell => cell !== 0)) {
+      // Delete the line
+      board.splice(y, 1);
+      // Add an empty line at the top
+      board.unshift(Array(10).fill(0));
+      // Since we modified the board, check the same line again
+      // as it now contains the line above it
+      y++;
+    }
+  }
+}
+
   
   // Existing code...
   
