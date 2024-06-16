@@ -95,28 +95,42 @@ function fixPiece() {
   currentPiece = null;
 }
 
-// Handle keydown events
-window.addEventListener('keydown', (e) => {
-  switch (e.key) {
-    case 'ArrowLeft':
-      currentPosition.x--;
-      if (collision()) currentPosition.x++;
-      break;
-    case 'ArrowRight':
-      currentPosition.x++;
-      if (collision()) currentPosition.x--;
-      break;
-    case 'ArrowDown':
-      currentPosition.y++;
-      if (collision()) currentPosition.y--;
-      break;
-    case ' ':
-      while (!collision()) currentPosition.y++;
-      currentPosition.y--;
-      break;
+// Function to rotate the current piece
+function rotatePiece(direction) {
+    let newPiece = currentPiece[0].map((val, index) => currentPiece.map(row => row[index])); // Transpose
+    if (direction === 'ArrowUp') newPiece.forEach(row => row.reverse()); // Reverse each row for a clockwise rotation
+    else newPiece.reverse(); // Reverse the matrix for a counterclockwise rotation
+    currentPiece = newPiece;
   }
-  drawBoard();
-});
+  
+  // Existing code...
+  
+  // Handle keydown events
+  window.addEventListener('keydown', (e) => {
+    switch (e.key) {
+      case 'ArrowLeft':
+        currentPosition.x--;
+        if (collision()) currentPosition.x++;
+        break;
+      case 'ArrowRight':
+        currentPosition.x++;
+        if (collision()) currentPosition.x--;
+        break;
+      case 'ArrowUp':
+        rotatePiece('ArrowUp');
+        if (collision()) rotatePiece('ArrowDown'); // Rotate back if there's a collision
+        break;
+      case 'ArrowDown':
+        rotatePiece('ArrowDown');
+        if (collision()) rotatePiece('ArrowUp'); // Rotate back if there's a collision
+        break;
+      case ' ':
+        while (!collision()) currentPosition.y++;
+        currentPosition.y--;
+        break;
+    }
+    drawBoard();
+  });
 
 // Start the game loop
 setInterval(update, 1000);
