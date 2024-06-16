@@ -1,0 +1,122 @@
+// Get the canvas context
+const canvas = document.getElementById('game-canvas');
+const context = canvas.getContext('2d');
+
+// Define the tetris pieces
+const pieces = [
+  [[1, 1, 1, 1]],
+  [[1, 1], [1, 1]],
+  [[1, 1, 0], [0, 1, 1]],
+  [[0, 1, 1], [1, 1]],
+  [[1, 1, 1], [0, 1, 0]],
+  [[1, 1, 1], [1, 0, 0]],
+  [[1, 1, 1], [0, 0, 1]]
+];
+
+// Initialize the game board
+let board = Array.from({length: 20}, () => Array(10).fill(0));
+
+// Current piece
+let currentPiece = null;
+
+// Current position
+let currentPosition = {x: 0, y: 0};
+
+// Function to draw the board
+function drawBoard() {
+  // Clear the board
+  context.clearRect(0, 0, canvas.width, canvas.height);
+
+  // Draw the board
+  for (let y = 0; y < 20; y++) {
+    for (let x = 0; x < 10; x++) {
+      if (board[y][x] !== 0) {
+        context.fillStyle = 'blue';
+        context.fillRect(x * 30, y * 30, 30, 30);
+      }
+    }
+  }
+
+  // Draw the current piece
+  if (currentPiece !== null) {
+    context.fillStyle = 'red';
+    for (let y = 0; y < currentPiece.length; y++) {
+      for (let x = 0; x < currentPiece[y].length; x++) {
+        if (currentPiece[y][x] !== 0) {
+          context.fillRect((currentPosition.x + x) * 30, (currentPosition.y + y) * 30, 30, 30);
+        }
+      }
+    }
+  }
+}
+
+// Function to update the game state
+function update() {
+  // If there is no current piece, create a new one
+  if (currentPiece === null) {
+    currentPiece = pieces[Math.floor(Math.random() * pieces.length)];
+    currentPosition = {x: 5, y: 0};
+  }
+
+  // Move the current piece down
+  currentPosition.y++;
+
+  // If the current piece has hit the bottom, fix it to the board
+  if (collision()) {
+    currentPosition.y--;
+    fixPiece();
+  }
+
+  // Draw the board
+  drawBoard();
+}
+
+// Function to check for a collision
+function collision() {
+  for (let y = 0; y < currentPiece.length; y++) {
+    for (let x = 0; x < currentPiece[y].length; x++) {
+      if (currentPiece[y][x] !== 0 && (board[currentPosition.y + y] === undefined || board[currentPosition.y + y][currentPosition.x + x] !== 0)) {
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
+// Function to fix the current piece to the board
+function fixPiece() {
+  for (let y = 0; y < currentPiece.length; y++) {
+    for (let x = 0; x < currentPiece[y].length; x++) {
+      if (currentPiece[y][x] !== 0) {
+        board[currentPosition.y + y][currentPosition.x + x] = 1;
+      }
+    }
+  }
+  currentPiece = null;
+}
+
+// Handle keydown events
+window.addEventListener('keydown', (e) => {
+  switch (e.key) {
+    case 'ArrowLeft':
+      currentPosition.x--;
+      if (collision()) currentPosition.x++;
+      break;
+    case 'ArrowRight':
+      currentPosition.x++;
+      if (collision()) currentPosition.x--;
+      break;
+    case 'ArrowDown':
+      currentPosition.y++;
+      if (collision()) currentPosition.y--;
+      break;
+    case ' ':
+      while (!collision()) currentPosition.y++;
+      currentPosition.y--;
+      break;
+  }
+  drawBoard();
+});
+
+// Start the game loop
+setInterval(update, 1000);
